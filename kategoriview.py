@@ -68,9 +68,23 @@ class Ui_KategoriView(object):
         self.pushButtonInsert.clicked.connect(self.insertkategori)
         self.pushButtonLoad.clicked.connect(self.loadkategori)
 
+        self.tableWidget.cellClicked.connect(self.getByid)
+
         self.retranslateUi(KategoriView)
         QtCore.QMetaObject.connectSlotsByName(KategoriView)
         
+    def getByid(self,row,column):
+        try:
+            iditem = self.tableWidget.item(row,0)
+            nameitem = self.tableWidget.item(row,1)
+            if iditem :
+                valueid = iditem.text()
+                valuename = nameitem.text()
+                self.lineEditID.setText(valueid)
+                self.lineEditNmKat.setText(valuename)
+            self.labelResult.setText(" Id Data Kategori ")
+        except mc.Error as Err:
+            self.labelResult.setText("Data Kategori Gagal")  
         
     def insertkategori(self):
         try:
@@ -148,7 +162,7 @@ class Ui_KategoriView(object):
         self.label_2.setText(_translate("KategoriView", "Nama Kategori"))
         self.pushButtonLoad.setText(_translate("KategoriView", "LOAD DATA"))
         
-   
+
 
 
 

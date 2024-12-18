@@ -12,28 +12,28 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector as mc
 from PyQt5.QtWidgets import QTableWidgetItem
 
+
 class Ui_KategoriView(object):
     def setupUi(self, KategoriView):
         KategoriView.setObjectName("KategoriView")
-        KategoriView.resize(388, 593)
+        KategoriView.resize(385, 600)
         self.centralwidget = QtWidgets.QWidget(KategoriView)
         self.centralwidget.setObjectName("centralwidget")
         self.lineEditNmKat = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEditNmKat.setGeometry(QtCore.QRect(150, 90, 181, 20))
         self.lineEditNmKat.setObjectName("lineEditNmKat")
         self.pushButtonInsert = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonInsert.setGeometry(QtCore.QRect(20, 160, 101, 31))
+        self.pushButtonInsert.setGeometry(QtCore.QRect(60, 140, 81, 31))
         self.pushButtonInsert.setObjectName("pushButtonInsert")
         self.labelResult = QtWidgets.QLabel(self.centralwidget)
-        self.labelResult.setGeometry(QtCore.QRect(30, 210, 311, 16))
+        self.labelResult.setGeometry(QtCore.QRect(20, 220, 311, 16))
         font = QtGui.QFont()
         font.setPointSize(9)
         font.setBold(True)
-        font.setWeight(75)
         self.labelResult.setFont(font)
         self.labelResult.setObjectName("labelResult")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(30, 30, 81, 16))
+        self.label.setGeometry(QtCore.QRect(30, 30, 81, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label.setFont(font)
@@ -42,7 +42,7 @@ class Ui_KategoriView(object):
         self.lineEditID.setGeometry(QtCore.QRect(150, 30, 181, 20))
         self.lineEditID.setObjectName("lineEditID")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(30, 90, 91, 16))
+        self.label_2.setGeometry(QtCore.QRect(30, 90, 91, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_2.setFont(font)
@@ -55,30 +55,46 @@ class Ui_KategoriView(object):
         self.pushButtonLoad = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonLoad.setGeometry(QtCore.QRect(30, 520, 321, 31))
         self.pushButtonLoad.setObjectName("pushButtonLoad")
-        self.pushButtonEdit = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonEdit.setGeometry(QtCore.QRect(140, 160, 101, 31))
-        self.pushButtonEdit.setObjectName("pushButtonEdit")
-        self.pushButtonDelete = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonDelete.setGeometry(QtCore.QRect(260, 160, 101, 31))
-        self.pushButtonDelete.setObjectName("pushButtonDelete")
+        self.pushButtonInsert_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonInsert_2.setGeometry(QtCore.QRect(150, 140, 81, 31))
+        self.pushButtonInsert_2.setObjectName("pushButtonInsert_2")
+        self.pushButtonInsert_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonInsert_3.setGeometry(QtCore.QRect(240, 140, 81, 31))
+        self.pushButtonInsert_3.setObjectName("pushButtonInsert_3")
+        self.pushButtonInsert_4 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonInsert_4.setGeometry(QtCore.QRect(200, 180, 171, 31))
+        self.pushButtonInsert_4.setObjectName("pushButtonInsert_4")
         KategoriView.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(KategoriView)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 388, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 385, 21))
         self.menubar.setObjectName("menubar")
         KategoriView.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(KategoriView)
         self.statusbar.setObjectName("statusbar")
         KategoriView.setStatusBar(self.statusbar)
-        
+
         self.pushButtonInsert.clicked.connect(self.insertkategori)
+        self.pushButtonInsert_2.clicked.connect(self.editkategori)
+        self.pushButtonInsert_3.clicked.connect(self.deletekategori)
         self.pushButtonLoad.clicked.connect(self.loadkategori)
-        self.pushButtonEdit.clicked.connect(self.editkategori)
-        self.pushButtonDelete.clicked.connect(self.deletekategori)
-
-
+        self.pushButtonInsert_4.clicked.connect(self.searchkategori)
+        self.tableWidget.cellClicked.connect(self.getByid)   
+    
         self.retranslateUi(KategoriView)
         QtCore.QMetaObject.connectSlotsByName(KategoriView)
-        
+
+    def getByid(self,row,column):
+        try:
+            iditem = self.tableWidget.item(row,0)
+            nameitem = self.tableWidget.item(row,1)
+            if iditem :
+                valueid = iditem.text()
+                valuename = nameitem.text()
+                self.lineEditID.setText(valueid)
+                self.lineEditNmKat.setText(valuename)
+            self.labelResult.setText(" Id Data Kategori ")
+        except mc.Error as Err:
+            self.labelResult.setText("Data Kategori Gagal")  
         
     def insertkategori(self):
         try:
@@ -102,83 +118,181 @@ class Ui_KategoriView(object):
         except mc.Error as e:
             self.labelResult.setText("Data Kategori Gagal Disimpan")
             
+    def editkategori(self):
+        try:
+            # Koneksi ke database
+            mydb = mc.connect(
+                host="localhost",
+                user="root",
+                password="",
+                database="db_penjualan_python"
+            )
+            cursor = mydb.cursor()
+
+            # Ambil data dari input field
+            idkat = self.lineEditID.text()
+            namekat = self.lineEditNmKat.text()
+
+            # Validasi input
+            if not idkat or not namekat:
+                self.labelResult.setText("ID dan Nama Kategori tidak boleh kosong!")
+                return
+
+            # Update data di database
+            sql = "UPDATE kategori SET name = %s WHERE id = %s"
+            val = (namekat, idkat)
+            cursor.execute(sql, val)
+            mydb.commit()
+
+            # Tampilkan pesan sukses
+            self.labelResult.setText("Data Kategori Berhasil Diupdate")
+
+            # Kosongkan input field
+            self.lineEditID.setText("")
+            self.lineEditNmKat.setText("")
+
+        except mc.Error as e:
+            # Tampilkan pesan error jika gagal
+            self.labelResult.setText(f"Data Kategori Gagal Diupdate: {e}")
+        finally:
+            # Tutup koneksi database jika terbuka
+            if mydb.is_connected():
+                mydb.close()
+
+    def deletekategori(self):
+        try:
+            # Koneksi ke database
+            mydb = mc.connect(
+                host="localhost",
+                user="root",
+                password="",
+                database="db_penjualan_python"
+            )
+            cursor = mydb.cursor()
+
+            # Ambil data dari input field
+            idkat = self.lineEditID.text()
+
+            # Validasi input
+            if not idkat:
+                self.labelResult.setText("ID Kategori tidak boleh kosong untuk menghapus data!")
+                return
+
+            # Hapus data di database
+            sql = "DELETE FROM kategori WHERE id = %s"
+            val = (idkat,)
+            cursor.execute(sql, val)
+            mydb.commit()
+
+            # Tampilkan pesan sukses
+            self.labelResult.setText("Data Kategori Berhasil Dihapus")
+
+            # Kosongkan input field
+            self.lineEditID.setText("")
+            self.lineEditNmKat.setText("")
+
+        except mc.Error as e:
+            # Tampilkan pesan error jika gagal
+            self.labelResult.setText(f"Data Kategori Gagal Dihapus: {e}")
+        finally:
+            # Tutup koneksi database jika terbuka
+            if mydb.is_connected():
+                mydb.close()
             
     def loadkategori(self):
         try:
+        # Koneksi ke database
             mydb = mc.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="db_penjualan_python"
-            )
+                host="localhost",
+                user="root",
+                password="",
+                database="db_penjualan_python"
+        )
             mycursor = mydb.cursor()
-            mycursor.execute("SELECT * FROM kategori ORDER BY ID ASC")
+        
+        # Eksekusi query untuk mengambil semua data dari tabel kategori
+            mycursor.execute("SELECT * FROM kategori ORDER BY id ASC")
             result = mycursor.fetchall()
 
-        # Set jumlah kolom sesuai data
-            self.tableWidget.setColumnCount(len(result[0]))  # Menyesuaikan jumlah kolom dengan data
-            self.tableWidget.setHorizontalHeaderLabels(["ID Kategori", "Nama Kategori"])  # Nama kolom
+        # Cek apakah ada data
+            if not result:
+                self.labelResult.setText("Tidak ada data di database!")
+                return
 
-        # Bersihkan tabel sebelum menambahkan data baru
-            self.tableWidget.setRowCount(0)
+        # Set jumlah kolom berdasarkan tabel
+            self.tableWidget.setColumnCount(len(result[0]))  # Jumlah kolom sesuai hasil query
+            self.tableWidget.setRowCount(len(result))        # Jumlah baris sesuai jumlah data
+            self.tableWidget.setHorizontalHeaderLabels(["ID Kategori", "Nama Kategori"])  # Set header tabel
 
+        # Masukkan data ke dalam QTableWidget
             for row_number, row_data in enumerate(result):
-                self.tableWidget.insertRow(row_number)
-            for column_number, data in enumerate(row_data):
-                self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+                for column_number, data in enumerate(row_data):
+                    self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
 
+        # Tampilkan pesan sukses
             self.labelResult.setText("Data Kategori Berhasil Ditampilkan")
         except mc.Error as err:
+        # Tangani error koneksi atau query
             self.labelResult.setText(f"Data Kategori Gagal DiLoad: {err}")
-        except IndexError:
-            self.labelResult.setText("Tidak ada data di database!")  
+        finally:
+        # Tutup koneksi database jika terbuka
+            if mydb.is_connected():
+                mydb.close()
+
+    def searchkategori(self):
+        try:
+            # Koneksi ke database
+            mydb = mc.connect(
+                host="localhost",
+                user="root",
+                password="",
+                database="db_penjualan_python"
+            )
+            cursor = mydb.cursor()
+
+            # Ambil data dari input field
+            idkat = self.lineEditID.text()
             
-    def editkategori(self):
-        current_row = self.tableWidget.currentRow()
-        if current_row < 0:
-            self.labelResult.setText("Pilih data yang ingin diedit terlebih dahulu.")
-            return
+            # Validasi input
+            if not idkat:
+                self.labelResult.setText("ID Kategori tidak boleh kosong untuk mencari data!")
+                return
 
-    # Ambil data dari tabel
-        idkat = self.tableWidget.item(current_row, 0).text()
-        namekat = self.tableWidget.item(current_row, 1).text()
+            # Cari data di database
+            sql = "SELECT * FROM kategori WHERE id = %s"
+            val = (idkat,)
+            cursor.execute(sql, val)
+            result = cursor.fetchone()
 
-    # Isi ke input field
-        self.lineEditID.setText(idkat)
-        self.lineEditNmKat.setText(namekat)
-        self.labelResult.setText("Edit data, lalu klik INSERT untuk menyimpan perubahan.")
+             # Cek apakah data ditemukan
+            if result:
+            # Kosongkan tabel sebelum menampilkan hasil pencarian
+                self.tableWidget.setRowCount(0)
+                self.tableWidget.setColumnCount(2)  # Pastikan kolom sesuai jumlah atribut
+                self.tableWidget.setHorizontalHeaderLabels(["ID Kategori", "Nama Kategori"])  # Header tabel
 
+            # Tambahkan data yang ditemukan ke tabel
+                for col_num, data in enumerate(result):
+                    self.tableWidget.setItem(0, col_num, QTableWidgetItem(str(data)))
 
-    def deletekategori(self):
-        current_row = self.tableWidget.currentRow()
-        if current_row < 0:  # Jika tidak ada baris yang dipilih
-            self.labelResult.setText("Pilih data yang ingin dihapus terlebih dahulu.")
-            return
+            # Tampilkan hasil di LineEdit
+                self.lineEditID.setText(str(result[0]))  # ID Kategori
+                self.lineEditNmKat.setText(result[1])   # Nama Kategori
+                
+               # Tampilkan pesan sukses
+                self.labelResult.setText("Data Kategori Ditemukan dan Ditampilkan")
+            else:
+            # Jika data tidak ditemukan, kosongkan tabel dan tampilkan pesan
+                self.tableWidget.setRowCount(0)
+                self.labelResult.setText("Data Kategori Tidak Ditemukan")
 
-    # Ambil ID dari baris yang dipilih
-        idkat = self.tableWidget.item(current_row, 0).text()  # Ambil data kolom pertama (ID Kategori)
-
-    try:
-        mydb = mc.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="db_penjualan_python"
-        )
-        cursor = mydb.cursor()
-
-        # Query DELETE
-        sql = "DELETE FROM kategori WHERE id = %s"
-        val = (idkat,)  # Gunakan ID yang diambil dari tabel
-        cursor.execute(sql, val)
-        mydb.commit()
-        
-        self.labelResult.setText("Data berhasil dihapus.")
-        self.loadkategori()  # Reload data di tabel
-    except mc.Error as e:
-        self.labelResult.setText(f"Data gagal dihapus: {e}")
-
-
+        except mc.Error as e:
+            # Tampilkan pesan error jika gagal
+            self.labelResult.setText(f"Data Kategori Gagal Dicari: {e}")
+        finally:
+            # Tutup koneksi database jika terbuka
+            if mydb.is_connected():
+                mydb.close()
 
     def retranslateUi(self, KategoriView):
         _translate = QtCore.QCoreApplication.translate
@@ -188,8 +302,9 @@ class Ui_KategoriView(object):
         self.label.setText(_translate("KategoriView", "ID Kategori"))
         self.label_2.setText(_translate("KategoriView", "Nama Kategori"))
         self.pushButtonLoad.setText(_translate("KategoriView", "LOAD DATA"))
-        self.pushButtonEdit.setText(_translate("KategoriView", "EDIT"))
-        self.pushButtonDelete.setText(_translate("KategoriView", "DELETE"))
+        self.pushButtonInsert_2.setText(_translate("KategoriView", "EDIT"))
+        self.pushButtonInsert_3.setText(_translate("KategoriView", "DELETE"))
+        self.pushButtonInsert_4.setText(_translate("KategoriView", "SEARCH"))
 
 
 if __name__ == "__main__":

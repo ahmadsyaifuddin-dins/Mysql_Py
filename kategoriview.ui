@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>388</width>
-    <height>593</height>
+    <width>385</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,9 +27,9 @@
    <widget class="QPushButton" name="pushButtonInsert">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>160</y>
-      <width>341</width>
+      <x>60</x>
+      <y>140</y>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -40,8 +40,8 @@
    <widget class="QLabel" name="labelResult">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>210</y>
+      <x>20</x>
+      <y>220</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -49,7 +49,6 @@
     <property name="font">
      <font>
       <pointsize>9</pointsize>
-      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
@@ -63,7 +62,7 @@
       <x>30</x>
       <y>30</y>
       <width>81</width>
-      <height>16</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -91,7 +90,7 @@
       <x>30</x>
       <y>90</y>
       <width>91</width>
-      <height>16</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -126,13 +125,52 @@
      <string>LOAD DATA</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonInsert_2">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>140</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>EDIT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonInsert_3">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>140</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DELETE</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonInsert_4">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>180</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SEARCH</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>388</width>
+     <width>385</width>
      <height>21</height>
     </rect>
    </property>
